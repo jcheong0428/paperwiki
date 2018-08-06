@@ -15,3 +15,9 @@ Abstract
 
 Paperwiki section
 [People can enter information about the article]
+
+
+# Resources
+https://github.com/reddit-archive/reddit 
+https://github.com/ckreibich/scholar.py
+https://flaskbb.readthedocs.io/en/latest/installation.html
