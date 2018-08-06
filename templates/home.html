@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>PaperWiki</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+   	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+		<div class = "bodycontainer">
+			<div class="container">
+				<h1>Welcome to PaperWiki</h1>
+				<p> Use the links below to navigate </p>
+        <!--  Search bar for articles here. -->
+        <form action = "http://0.0.0.0:5000/search" method = "POST"
+    		 enctype = "multipart/form-data" id="searchform">
+    			<input type = "search" id="author" name = "author" size="40"
+          placeholder="Add author names..."/>
+          <br>
+    			<input type = "search" id="words" name = "words" size="40"
+          placeholder="Add keywords..."/>
+        <button>Search</button>
+        </form>
+			</div>
+
+      <div class = 'resultscontainer'>
+      {% if docs %}
+      <h2>Here are the search results</h2>
+      <table class = "table table-striped">
+        <thead>
+						<tr>
+              <th scope="col">PaperWiki</th>
+							<th scope="col">title</th>
+							<th scope="col">year</th>
+              <th scope="col">num_citations</th>
+              <th scope="col">num_versions</th>
+              <th scope="col">cluster_id</th>
+              <th scope="col">excerpt</th>
+						</tr>
+					</thead>
+          <tbody>
+            {% for doc in docs %}
+              <tr>
+                <td>
+                  <!-- Add check to see if wiki exists.
+                Render see_wiki if exists, create_wiki if not -->
+                {% if doc.wiki_exists %}
+                  <form action="http://0.0.0.0:5000/see_wiki" method = "POST">
+                    <button name="see_wiki" type="submit" value={{doc.cluster_id[0]}}
+                    id={{doc.cluster_id[0]}}>See Wiki</button>
+                  </form>
+                {% else %}
+                <form action="http://0.0.0.0:5000/create_wiki" method = "POST">
+                  <button name="create_wiki" type="submit" value={{doc.cluster_id[0]}}
+                  id={{doc.cluster_id[0]}}>Create Wiki</button>
+                </form>
+                {% endif %}
+                </td>
+                <td><a href={{ doc.url[0]}}>{{ doc.title[0]}}</a></td>
+                <!-- <td>{{ doc.url[0]}}</td> -->
+                <td>{{ doc.year[0]}}</td>
+                <td><a href={{ doc.url_citations[0]}}>{{ doc.num_citations[0]}}</a></td>
+                <td><a href={{ doc.url_versions[0]}}>{{ doc.num_versions[0]}}</a></td>
+                <td>{{ doc.cluster_id[0]}}</td>
+                <td>{{ doc.excerpt[0]}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      {% else %}
+      <p>No docs to show</p>
+      {% endif %}
+      </div>
+		</div>
+	</body>
+</html>
