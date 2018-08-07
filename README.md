@@ -17,6 +17,7 @@ Abstract
 Paperwiki section
 [People can enter information about the article]
 
+
 # Features
 - search google scholar
 - create or see wiki pages on each paper
@@ -24,9 +25,13 @@ Paperwiki section
 - main page will have a feed for recent wiki updates
 - users who contribute to the wiki will be notified when changed
 - users can star (bookmark) papers to their paperwiki library.
-- network map of literature. 
+- network map of literature.
 
 # Resources
 https://github.com/reddit-archive/reddit
 https://github.com/ckreibich/scholar.py
 https://flaskbb.readthedocs.io/en/latest/installation.html
+
+![alt text](./images/1.png "Logo Title Text 1")
+![alt text](./images/2.png "Logo Title Text 1")
+![alt text](./images/3.png "Logo Title Text 1")
