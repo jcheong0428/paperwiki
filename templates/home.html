@@ -26,6 +26,7 @@
 			</div>
 
       <div class = 'resultscontainer'>
+        <div class="container">
       {% if docs %}
       <h2>Here are the search results</h2>
       <table class = "table table-striped">
@@ -33,10 +34,11 @@
 						<tr>
               <th scope="col">PaperWiki</th>
 							<th scope="col">title</th>
+              <th scope="col">authors</th>
 							<th scope="col">year</th>
+              <th scope="col">journal</th>
               <th scope="col">num_citations</th>
-              <th scope="col">num_versions</th>
-              <th scope="col">cluster_id</th>
+              <!-- <th scope="col">num_versions</th> -->
               <th scope="col">excerpt</th>
 						</tr>
 					</thead>
@@ -59,11 +61,19 @@
                 {% endif %}
                 </td>
                 <td><a href={{ doc.url[0]}}>{{ doc.title[0]}}</a></td>
-                <!-- <td>{{ doc.url[0]}}</td> -->
+                <td>
+                {% for author in doc.authors[0] %}
+                {% if doc.url_authors[0][author] %}
+                <a href={{doc.url_authors[0][author]}}>{{author}}</a>
+                {% else %}{{author}}
+                {% endif %}
+                {% if loop.index < doc.authors[0]|length %}, {% endif %}
+                {% endfor %}
+                </td>
                 <td>{{ doc.year[0]}}</td>
+                <td>{{ doc.journal[0]}}</td>
                 <td><a href={{ doc.url_citations[0]}}>{{ doc.num_citations[0]}}</a></td>
-                <td><a href={{ doc.url_versions[0]}}>{{ doc.num_versions[0]}}</a></td>
-                <td>{{ doc.cluster_id[0]}}</td>
+                <!-- <td><a href={{ doc.url_versions[0]}}>{{ doc.num_versions[0]}}</a></td> -->
                 <td>{{ doc.excerpt[0]}}</td>
               </tr>
             {% endfor %}
@@ -74,5 +84,6 @@
       {% endif %}
       </div>
 		</div>
+    </div>
 	</body>
 </html>

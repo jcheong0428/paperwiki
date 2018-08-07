@@ -59,7 +59,7 @@ async def search(request):
     settings = ScholarSettings()
     settings.set_citation_format(ScholarSettings.CITFORM_BIBTEX)
     querier.apply_settings(settings)
-    query.set_author('author')
+    query.set_author(author)
     query.set_words(words)
     # Queries Google Scholar
     querier.send_query(query)

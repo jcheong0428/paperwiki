@@ -297,6 +297,10 @@ class ScholarArticle(object):
             'url_versions':  [None, 'Versions list',  8],
             'url_citation':  [None, 'Citation link',  9],
             'excerpt':       [None, 'Excerpt',       10],
+            'authors':       [None, 'Authors',       11],
+            'url_authors':   [None, 'Authors link',  12],
+            'journal':       [None, 'Journal',       13],
+            'publisher':     [None, 'publisher',     14]
         }
 
         # The citation data in one of the standard export formats,
@@ -512,9 +516,9 @@ class ScholarArticleParser(object):
 
     def _path2url(self, path):
         """Helper, returns full URL in case path isn't one."""
-        if path.startswith('http://'):
+        if path.startswith('http://') or path.startswith('https://'):
             return path
-        if not path.startswith('/'):
+        elif not path.startswith('/'):
             path = '/' + path
         return self.site + path
 
@@ -607,6 +611,31 @@ class ScholarArticleParser120726(ScholarArticleParser):
                     self.article['title'] = ''.join(tag.h3.findAll(text=True))
 
                 if tag.find('div', {'class': 'gs_a'}):
+                    # Parses authors, rul_author, journal, publisher
+                    splitted = self.year_re.split(tag.find('div', {'class': 'gs_a'}).text)
+                    if len(splitted)==2:
+                        authors_and_journal, publisher = self.year_re.split(tag.find('div', {'class': 'gs_a'}).text)
+                        authors, journal = authors_and_journal.split('-')
+                        if '…' in authors:
+                            authors = authors.replace('…','').replace('\xa0','').split(', ')
+                            authors.append('…')
+                        else:
+                            authors = authors.replace('\xa0','').split(', ')
+                        journal = journal.strip(' ').strip(',')
+                        self.article['authors'] = authors
+                        self.article['journal'] = journal
+                        self.article['publisher'] = publisher.replace(' ','').replace('-','')
+                        #   Create authors, and authors_url. to match scholar.
+                        auth_url_dict = {}
+                        for href_author in tag.find('div', {'class': 'gs_a'}).find_all("a"):
+                            auth_url_dict[href_author.text]='https://scholar.google.com'+href_author.get('href')
+                        for author in authors:
+                            if author in auth_url_dict.keys():
+                                pass
+                            else:
+                                auth_url_dict[author] = None
+                        self.article['url_authors'] = auth_url_dict
+                    # Parses year
                     year = self.year_re.findall(tag.find('div', {'class': 'gs_a'}).text)
                     self.article['year'] = year[0] if len(year) > 0 else None
 
