@@ -26,6 +26,7 @@ Paperwiki section
 - users who contribute to the wiki will be notified when changed
 - users can star (bookmark) papers to their paperwiki library.
 - network map of literature.
+- retraction watch buttons and such. 
 
 # Resources
 https://github.com/reddit-archive/reddit
