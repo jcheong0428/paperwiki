@@ -48,7 +48,7 @@
                 <td>
                   <!-- Add check to see if wiki exists.
                 Render see_wiki if exists, create_wiki if not -->
-                {% if doc.wiki_exists %}
+                {% if not doc.wiki_exists %}
                   <form action="http://0.0.0.0:5000/see_wiki" method = "POST">
                     <button name="see_wiki" type="submit" value={{doc.cluster_id[0]}}
                     id={{doc.cluster_id[0]}}>See Wiki</button>

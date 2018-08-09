@@ -1,13 +1,20 @@
 # App from sanic
-from sanic import Sanic, response
-from sanic_auth import Auth, User
+from flask import Flask, render_template, request
+from flask_wtf import FlaskForm
+from flask_pagedown.fields import PageDownField
+from wtforms.fields import SubmitField
+from flask_pagedown import PageDown
+
+class PageDownFormExample(FlaskForm):
+    pagedown = PageDownField('Enter your markdown')
+    submit = SubmitField('Submit')
 
 # Handle mongo queries async style
-from motor.motor_asyncio import AsyncIOMotorClient
+# from motor.motor_asyncio import AsyncIOMotorClient
 
 # Template rendering
-from jinja2 import DictLoader
-import jinja2_sanic as j2s
+# from jinja2 import DictLoader
+# import jinja2_sanic as j2s
 # External async connections
 import asyncio
 import uvloop
@@ -21,33 +28,38 @@ from datetime import datetime
 from scholar import SearchScholarQuery, ScholarQuerier, SearchScholarQuery,ScholarSettings
 
 # Create app
-app = Sanic()
+app = Flask(__name__)
+pagedown = PageDown(app)
 app.config.from_pyfile('./config.py')
-session = {}
-@app.middleware('request')
-async def add_session(request):
-    request['session'] = session
+app.config.update(dict(
+    SECRET_KEY="powerful secretkey",
+    WTF_CSRF_SECRET_KEY="a csrf secret key"
+))
+# session = {}
+# @app.middleware('request')
+# def add_session(request):
+#     request['session'] = session
 
 # Configure templates
-template_dict = {}
-template_dict['home'] = open('./templates/home.html').read()
-template_dict['see_wiki'] = open('./templates/see_wiki.html').read()
-template_dict['create_wiki'] = open('./templates/create_wiki.html').read()
-j2s.setup(app,loader=DictLoader(template_dict))
+# template_dict = {}
+# template_dict['home'] = open('./templates/home.html').read()
+# template_dict['see_wiki'] = open('./templates/see_wiki.html').read()
+# template_dict['create_wiki'] = open('./templates/create_wiki.html').read()
+# j2s.setup(app,loader=DictLoader(template_dict))
 
 # Create async mongo connection
 # Make motor-mongo use the same event loop as sanic
-@app.listener('before_server_start')
-async def setup_db(app,loop):
-    app.db = AsyncIOMotorClient(app.config['MONGOURI'])['paperwiki']
+# @app.listener('before_server_start')
+# def setup_db(app,loop):
+#     app.db = AsyncIOMotorClient(app.config['MONGOURI'])['paperwiki']
 
 @app.route("/", methods=['GET', 'POST'])
-async def home(request):
-    resp = j2s.render_template("home", request, context={})
+def home():
+    resp = render_template("home.html")
     return resp
 
 @app.route("/search", methods=['GET','POST'])
-async def search(request):
+def search():
     """
     Uses scholar.py to read documents from google search.
 
@@ -74,30 +86,33 @@ async def search(request):
             article['wiki_exists'] = False
         articles.append(article)
     context = {"docs":articles}
-    resp = j2s.render_template("home", request, context)
+    resp = render_template("home.html",docs=articles)
     return resp
 
 @app.route("/create_wiki", methods=['GET','POST'])
-async def search(request):
+def create_wiki():
     """
     Create new wiki page
     """
     print(request.form['create_wiki'])
-    context={"cluster_id":request.form['see_wiki']}
-    resp = j2s.render_template("create_wiki", request, context)
+    context={"cluster_id":request.form['create_wiki']}
+    form = PageDownFormExample()
+    if form.validate_on_submit():
+        text = form.pagedown.data
+    resp = render_template("create_wiki.html",form = form)
     return resp
 
 @app.route("/see_wiki", methods=['GET','POST'])
-async def search(request):
+def see_wiki():
     """
     See existing wiki page
     """
     print(request.form['see_wiki'])
     context={"cluster_id":request.form['see_wiki']}
-    resp = j2s.render_template("see_wiki", request, context)
+    resp = render_template("see_wiki.html")
     return resp
 
 if __name__ == "__main__":
     print("Running on Port 5000")
     # Can change workers to num cores for better performance
-    app.run(host="0.0.0.0",port=5000, workers=1)
+    app.run(host="0.0.0.0",port=5000)
