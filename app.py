@@ -158,7 +158,15 @@ def see_wiki(id=None):
     resp = render_template("see_wiki.html",id=clusterID,doc=search_result,content=content)
     return resp
 
+ON_HEROKU = os.environ.get('ON_HEROKU')
+
+if ON_HEROKU:
+    # get the heroku port
+    port = int(os.environ.get('PORT', 17995))  # as per OP comments default is 17995
+else:
+    port = 5000
+
 if __name__ == "__main__":
     print("Running on Port 5000")
     # Can change workers to num cores for better performance
-    app.run(host="0.0.0.0",port=5000,debug=True)
+    app.run(host="0.0.0.0",port=port,debug=True)
