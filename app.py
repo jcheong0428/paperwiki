@@ -41,7 +41,6 @@ app.config.update(dict(
 ))
 # app.db = AsyncIOMotorClient(app.config['MONGOURI'])['paperwiki']
 app.config["MONGO_URI"] = app.config['MONGOURI']
-app.config["HOST"]="https://paperwiki-api-heroku.herokuapp.com/"
 mongo = PyMongo(app)
 # session = {}
 # @app.middleware('request')
@@ -99,15 +98,15 @@ def search():
             # Add check DB if wiki exists. Add attribute wiki_exists
             if search_result:
                 if 'content' in search_result.keys():
-                    article['actionurl'] = app.config["HOST"]+"see_wiki?id=" + clusterID
+                    article['actionurl'] = "see_wiki?id=" + clusterID
                     article['wiki_exists'] = True
                 else:
-                    article['actionurl'] = app.config["HOST"]+"create_wiki?id=" + clusterID
+                    article['actionurl'] = "create_wiki?id=" + clusterID
                     article['wiki_exists'] = False
             else:
                 article['clusterID'] = article['cluster_id'][0]
                 insert_id = mongo.db.paperwiki.insert_one(article)
-                article['actionurl'] = app.config["HOST"]+"create_wiki?id=" + clusterID
+                article['actionurl'] = "create_wiki?id=" + clusterID
                 article['wiki_exists'] = False
             articles.append(article)
     context = {"docs":articles}
@@ -121,7 +120,7 @@ def create_wiki(id=None):
     Create new wiki page
     """
     clusterID = str(request.form['create_wiki'])
-    submit_url = app.config["HOST"]+"submit_wiki?id=" + clusterID
+    submit_url = "submit_wiki?id=" + clusterID
     doc = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
     print('This is the article ID: ',clusterID)
     context={"cluster_id":request.form['create_wiki']}
@@ -162,4 +161,4 @@ def see_wiki(id=None):
 if __name__ == "__main__":
     print("Running on Port 5000")
     # Can change workers to num cores for better performance
-    app.run(host="https://paperwiki-api-heroku.herokuapp.com/",port=5000,debug=True)
+    app.run(host=""0.0.0.0"",port=5000,debug=True)
