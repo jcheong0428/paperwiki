@@ -11,7 +11,22 @@
 	<body>
     <div class = "bodycontainer">
       <div class="container">
-    <h1>See Wiki page [Example]</h1>
+    <h1>PaperWiki on Title and Authors.</h1>
+    Title: {{doc.title[0]}}
+    Authors: {{doc.authors[0]}}
+    {% for author in doc.authors[0] %}
+    {% if doc.url_authors[0][author] %}
+    <a href={{doc.url_authors[0][author]}}>{{author}}</a>
+    {% else %}{{author}}
+    {% endif %}
+    {% if loop.index < doc.authors[0]|length %}, {% endif %}
+    {% endfor %}
+    Year: {{doc.year[0]}}
+    Journal: {{doc.journal[0]}}
+    <br><br>
+    {{content}}
+
+<!--
     Title: Large-scale automated synthesis of human functional neuroimaging data
     <br>Authors: T Yarkoni , RA Poldrack , TE Nichols , DC Van Essen , …
     <br>Year: 2011
@@ -24,7 +39,7 @@
     This paper changed the neuroscience research landscape.
 
     Other similar contributions include
-    Openfri, neurolearn, openneuro, etc, etc...
+    Openfri, neurolearn, openneuro, etc, etc... -->
     <!--
     {% for heading in documents %}
     list headers

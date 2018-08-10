@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-    {{ pagedown.include_pagedown() }}
-
 		<title>PaperWiki</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
    	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -13,15 +11,30 @@
 	<body>
     <div class = "bodycontainer">
       <div class="container">
-    <h1>Create Wiki page</h1>
-    <!--  -->
+    <h1>Create Wiki page for</h1>
+    Title: {{doc.title[0]}}
+    <br>
+    Authors:
+    {% for author in doc.authors[0] %}
+    {% if doc.url_authors[0][author] %}
+    <a href={{doc.url_authors[0][author]}}>{{author}}</a>
+    {% else %}{{author}}
+    {% endif %}
+    {% if loop.index < doc.authors[0]|length %}, {% endif %}
+    {% endfor %}
+    <br>
+    Year: {{doc.year[0]}}
+    <br>
+    Journal: {{doc.journal[0]}}
+    <br>
+    Excerpt: {{doc.excerpt[0]}}
 
     <form>
     <textarea name="desc" id="demo1"></textarea>
     </form>
-    <form action="http://0.0.0.0:5000/submit_wiki" method = "POST">
-      <button name="submit_wiki" type="submit" value=
-      id="submit_wiki">Submit Wiki</button>
+    <form action={{submit_url}} method = "POST">
+      <button name="submit_wiki" type="submit" id="submit_wiki"
+      value='VALUEHERE'>Submit Wiki</button>
     </form>
 
   </div></div>
@@ -33,6 +46,15 @@
                                 spellChecker: false,
                                 initialValue: "Add information about article here!",
                                  });
+
+   $("button").click(function() {
+       var el       = document.getElementById("submit_wiki");
+       el.value     = JSON.stringify({'content': simplemde.value()});
+       // el.value     = JSON.stringify({'clusterID':'djfks',
+       //                        'content': simplemde.value()});
+       var fired_button = "Wiki has been submitted!"
+       // alert(fired_button);
+   });
   </script>
 
 </html>
