@@ -36,7 +36,7 @@ app = Flask(__name__)
 pagedown = PageDown(app)
 app.config.from_pyfile('./config.py')
 app.config.update(dict(
-    SECRET_KEY="powerful secretkey",
+    SECRET_KEY="powerful secretkey yes!",
     WTF_CSRF_SECRET_KEY="a csrf secret key"
 ))
 # app.db = AsyncIOMotorClient(app.config['MONGOURI'])['paperwiki']
