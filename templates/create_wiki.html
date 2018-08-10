@@ -12,22 +12,21 @@
     <div class = "bodycontainer">
       <div class="container">
     <h1>Create Wiki page for</h1>
-    Title: {{doc.title[0]}}
+    Title: <a href={{ doc.URL}}>{{doc.title[0]}}</a>
     <br>
-    Authors:
-    {% for author in doc.authors[0] %}
-    {% if doc.url_authors[0][author] %}
-    <a href={{doc.url_authors[0][author]}}>{{author}}</a>
-    {% else %}{{author}}
-    {% endif %}
-    {% if loop.index < doc.authors[0]|length %}, {% endif %}
-    {% endfor %}
+    Authors:                 {% for author in doc.author %}
+                    {% if author.ORCID %}
+                    <a href={{author.ORCID}}>{{author['family']}}, {{author['given']}}</a>
+                    {% else %}{{author['family']}}, {{author['given']}}
+                    {% endif %}
+                    {% if loop.index < doc.author|length %}, {% endif %}
+                    {% endfor %}
+                    <br>
+    Year: {{ doc.created['date-parts'][0][0]}}
     <br>
-    Year: {{doc.year[0]}}
+    Journal: {{ doc.publisher}}
     <br>
-    Journal: {{doc.journal[0]}}
-    <br>
-    Excerpt: {{doc.excerpt[0]}}
+    Abstract: {{ doc.abstract}}
 
     <form>
     <textarea name="desc" id="demo1"></textarea>

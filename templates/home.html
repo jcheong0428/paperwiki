@@ -37,9 +37,9 @@
               <th scope="col">authors</th>
 							<th scope="col">year</th>
               <th scope="col">journal</th>
-              <th scope="col">num_citations</th>
+              <!-- <th scope="col">num_citations</th> -->
               <!-- <th scope="col">num_versions</th> -->
-              <th scope="col">excerpt</th>
+              <th scope="col">abstract</th>
 						</tr>
 					</thead>
           <tbody>
@@ -50,31 +50,29 @@
                 Render see_wiki if exists, create_wiki if not -->
                 {% if doc.wiki_exists %}
                    <form action={{doc.actionurl}} method = "POST">
-                    <button name="see_wiki" type="submit" value={{doc.cluster_id[0]}}
-                    id={{doc.cluster_id[0]}}>See Wiki</button>
+                    <button name="see_wiki" type="submit" value={{doc.DOI}}
+                    id={{doc.doi}}>See Wiki</button>
                   </form>
                 {% else %}
                   <form action={{doc.actionurl}} method = "POST">
-                  <button name="create_wiki" type="submit" value={{doc.cluster_id[0]}}
-                  id={{doc.cluster_id[0]}}>Create Wiki</button>
+                  <button name="create_wiki" type="submit" value={{doc.DOI}}
+                  id={{doc.DOI}}>Create Wiki</button>
                 </form>
                 {% endif %}
                 </td>
-                <td><a href={{ doc.url[0]}}>{{ doc.title[0]}}</a></td>
+                <td><a href={{ doc.URL}}>{{doc.title[0]}}</a></td>
                 <td>
-                {% for author in doc.authors[0] %}
-                {% if doc.url_authors[0][author] %}
-                <a href={{doc.url_authors[0][author]}}>{{author}}</a>
-                {% else %}{{author}}
+                {% for author in doc.author %}
+                {% if author.ORCID %}
+                <a href={{author.ORCID}}>{{author['family']}}, {{author['given']}}</a>
+                {% else %}{{author['family']}}, {{author['given']}}
                 {% endif %}
-                {% if loop.index < doc.authors[0]|length %}, {% endif %}
+                {% if loop.index < doc.author|length %}, {% endif %}
                 {% endfor %}
                 </td>
-                <td>{{ doc.year[0]}}</td>
-                <td>{{ doc.journal[0]}}</td>
-                <td><a href={{ doc.url_citations[0]}}>{{ doc.num_citations[0]}}</a></td>
-                <!-- <td><a href={{ doc.url_versions[0]}}>{{ doc.num_versions[0]}}</a></td> -->
-                <td>{{ doc.excerpt[0]}}</td>
+                <td>{{ doc.created['date-parts'][0][0]}}</td>
+                <td>{{ doc.publisher}}</td>
+                <td>{{ doc.abstract}}</td>
               </tr>
             {% endfor %}
           </tbody>

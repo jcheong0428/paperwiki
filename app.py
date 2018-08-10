@@ -7,6 +7,7 @@ from flask_pagedown import PageDown
 # for markdown
 import markdown
 from flask import Markup
+from crossref.restful import Works
 
 class PageDownFormExample(FlaskForm):
     pagedown = PageDownField('Enter your markdown')
@@ -75,40 +76,31 @@ def search():
     Uses scholar.py to read documents from google search.
 
     """
-    author = request.form['author']
-    words = request.form['words']
-    querier = ScholarQuerier()
-    query = SearchScholarQuery()
-    settings = ScholarSettings()
-    settings.set_citation_format(ScholarSettings.CITFORM_BIBTEX)
-    querier.apply_settings(settings)
-    query.set_author(author)
-    query.set_words(words)
-    # Queries Google Scholar
-    querier.send_query(query)
-    # Parse results
+    queries = {}
+    for key in ['author','words']:
+        val = request.form[key]
+        if len(val)>0:
+            queries[key] = request.form[key]
+        else:
+            queries[key] = None
+    works = Works() # init api scraper
+    articles_q = works.query(title=queries['words'], author=queries['author']).sample(20)
     articles = []
-    for article in querier.articles:
-        article = article.attrs
-        if article['authors'] is not None:
-            clusterID =str(article['cluster_id'][0])
-            # print(clusterID)
-            # print(article)
-            search_result = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
-            # Add check DB if wiki exists. Add attribute wiki_exists
-            if search_result:
-                if 'content' in search_result.keys():
-                    article['actionurl'] = "see_wiki?id=" + clusterID
-                    article['wiki_exists'] = True
-                else:
-                    article['actionurl'] = "create_wiki?id=" + clusterID
-                    article['wiki_exists'] = False
+    for article in articles_q:
+        articles.append(article)
+        doi = article['DOI']
+        search_result = mongo.db.paperwiki.find_one({ "DOI" : doi})
+        if search_result:
+            if 'content' in search_result.keys():
+                article['actionurl'] = "see_wiki?id=" + doi
+                article['wiki_exists'] = True
             else:
-                article['clusterID'] = article['cluster_id'][0]
-                insert_id = mongo.db.paperwiki.insert_one(article)
-                article['actionurl'] = "create_wiki?id=" + clusterID
+                article['actionurl'] = "create_wiki?id=" + doi
                 article['wiki_exists'] = False
-            articles.append(article)
+        else:
+            insert_id = mongo.db.paperwiki.insert_one(article)
+            article['actionurl'] = "create_wiki?id=" + doi
+            article['wiki_exists'] = False
     context = {"docs":articles}
     resp = render_template("home.html",docs=articles)
     return resp
@@ -121,7 +113,7 @@ def create_wiki(id=None):
     """
     clusterID = str(request.form['create_wiki'])
     submit_url = "submit_wiki?id=" + clusterID
-    doc = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
+    doc = mongo.db.paperwiki.find_one({ "DOI" : clusterID})
     print('This is the article ID: ',clusterID)
     context={"cluster_id":request.form['create_wiki']}
     form = PageDownFormExample()
@@ -139,7 +131,7 @@ def submit_wiki(id=None):
     # print(request.form['submit_wiki'])
     clusterID = str(request.args.get('id'))
     response = json.loads(request.form['submit_wiki'])
-    search_result = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
+    search_result = mongo.db.paperwiki.find_one({ "DOI" : clusterID})
     search_result['content'] = str(response['content'])
     insert_id = mongo.db.paperwiki.replace_one({'_id':search_result['_id']},search_result) # mongo
     content = Markup(markdown.markdown(search_result['content']))
@@ -153,7 +145,7 @@ def see_wiki(id=None):
     See existing wiki page
     """
     clusterID = str(request.args.get('id'))
-    search_result = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
+    search_result = mongo.db.paperwiki.find_one({ "DOI" : clusterID})
     content = Markup(markdown.markdown(search_result['content']))
     resp = render_template("see_wiki.html",id=clusterID,doc=search_result,content=content)
     return resp
