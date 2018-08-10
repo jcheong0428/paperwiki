@@ -286,21 +286,21 @@ class ScholarArticle(object):
         # value, (2) a user-suitable label for the item, and (3) an
         # ordering index:
         self.attrs = {
-            'title':         [None, 'Title',          0],
-            'url':           [None, 'URL',            1],
-            'year':          [None, 'Year',           2],
+            'title':         ['', 'Title',          0],
+            'url':           ['', 'URL',            1],
+            'year':          ['', 'Year',           2],
             'num_citations': [0,    'Citations',      3],
             'num_versions':  [0,    'Versions',       4],
-            'cluster_id':    [None, 'Cluster ID',     5],
-            'url_pdf':       [None, 'PDF link',       6],
-            'url_citations': [None, 'Citations list', 7],
-            'url_versions':  [None, 'Versions list',  8],
-            'url_citation':  [None, 'Citation link',  9],
-            'excerpt':       [None, 'Excerpt',       10],
-            'authors':       [None, 'Authors',       11],
-            'url_authors':   [None, 'Authors link',  12],
-            'journal':       [None, 'Journal',       13],
-            'publisher':     [None, 'publisher',     14]
+            'cluster_id':    ['', 'Cluster ID',     5],
+            'url_pdf':       ['', 'PDF link',       6],
+            'url_citations': ['', 'Citations list', 7],
+            'url_versions':  ['', 'Versions list',  8],
+            'url_citation':  ['', 'Citation link',  9],
+            'excerpt':       ['', 'Excerpt',       10],
+            'authors':       ['', 'Authors',       11],
+            'url_authors':   ['', 'Authors link',  12],
+            'journal':       ['', 'Journal',       13],
+            'publisher':     ['', 'publisher',     14]
         }
 
         # The citation data in one of the standard export formats,
@@ -370,7 +370,7 @@ class ScholarArticleParser(object):
         self.soup = None
         self.article = None
         self.site = site or ScholarConf.SCHOLAR_SITE
-        self.year_re = re.compile(r'\b(?:20|19)\d{2}\b')
+        self.year_re = re.compile(r'\b(?:20|19|18)\d{2}\b')
 
     def handle_article(self, art):
         """
@@ -614,14 +614,23 @@ class ScholarArticleParser120726(ScholarArticleParser):
                     # Parses authors, rul_author, journal, publisher
                     splitted = self.year_re.split(tag.find('div', {'class': 'gs_a'}).text)
                     if len(splitted)==2:
-                        authors_and_journal, publisher = self.year_re.split(tag.find('div', {'class': 'gs_a'}).text)
-                        authors, journal = authors_and_journal.split('-')
+                        authors_and_journal, publisher = splitted[0],splitted[1]
+                        try:
+                            authors, journal = authors_and_journal.split('- ')
+                        except:
+                            authors = authors_and_journal
+                            journal = publisher
                         if '…' in authors:
                             authors = authors.replace('…','').replace('\xa0','').split(', ')
                             authors.append('…')
                         else:
                             authors = authors.replace('\xa0','').split(', ')
                         journal = journal.strip(' ').strip(',')
+                        # clean authors
+                        for author in authors:
+                            if len(author)==0:
+                                authors.remove(author)
+                        print('author:',authors, 'journal: ', journal)
                         self.article['authors'] = authors
                         self.article['journal'] = journal
                         self.article['publisher'] = publisher.replace(' ','').replace('-','')

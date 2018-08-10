@@ -26,7 +26,15 @@ Paperwiki section
 - users who contribute to the wiki will be notified when changed
 - users can star (bookmark) papers to their paperwiki library.
 - network map of literature.
-- retraction watch buttons and such. 
+- retraction watch buttons and such.
+
+# To run:
+install dependencies
+run
+```
+python app.py
+```
+in browser navigate to localhost:5000
 
 # Resources
 https://github.com/reddit-archive/reddit
