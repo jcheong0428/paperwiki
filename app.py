@@ -7,6 +7,7 @@ from flask_pagedown import PageDown
 # for markdown
 import markdown
 from flask import Markup
+from crossref.restful import Works
 
 class PageDownFormExample(FlaskForm):
     pagedown = PageDownField('Enter your markdown')
@@ -36,7 +37,7 @@ app = Flask(__name__)
 pagedown = PageDown(app)
 app.config.from_pyfile('./config.py')
 app.config.update(dict(
-    SECRET_KEY="powerful secretkey",
+    SECRET_KEY="powerful secretkey yes!",
     WTF_CSRF_SECRET_KEY="a csrf secret key"
 ))
 # app.db = AsyncIOMotorClient(app.config['MONGOURI'])['paperwiki']
@@ -75,40 +76,31 @@ def search():
     Uses scholar.py to read documents from google search.
 
     """
-    author = request.form['author']
-    words = request.form['words']
-    querier = ScholarQuerier()
-    query = SearchScholarQuery()
-    settings = ScholarSettings()
-    settings.set_citation_format(ScholarSettings.CITFORM_BIBTEX)
-    querier.apply_settings(settings)
-    query.set_author(author)
-    query.set_words(words)
-    # Queries Google Scholar
-    querier.send_query(query)
-    # Parse results
+    queries = {}
+    for key in ['author','words']:
+        val = request.form[key]
+        if len(val)>0:
+            queries[key] = request.form[key]
+        else:
+            queries[key] = None
+    works = Works() # init api scraper
+    articles_q = works.query(title=queries['words'], author=queries['author']).sample(20)
     articles = []
-    for article in querier.articles:
-        article = article.attrs
-        if article['authors'] is not None:
-            clusterID =str(article['cluster_id'][0])
-            # print(clusterID)
-            # print(article)
-            search_result = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
-            # Add check DB if wiki exists. Add attribute wiki_exists
-            if search_result:
-                if 'content' in search_result.keys():
-                    article['actionurl'] = "http://0.0.0.0:5000/see_wiki?id=" + clusterID
-                    article['wiki_exists'] = True
-                else:
-                    article['actionurl'] = "http://0.0.0.0:5000/create_wiki?id=" + clusterID
-                    article['wiki_exists'] = False
+    for article in articles_q:
+        articles.append(article)
+        doi = article['DOI']
+        search_result = mongo.db.paperwiki.find_one({ "DOI" : doi})
+        if search_result:
+            if 'content' in search_result.keys():
+                article['actionurl'] = "see_wiki?id=" + doi
+                article['wiki_exists'] = True
             else:
-                article['clusterID'] = article['cluster_id'][0]
-                insert_id = mongo.db.paperwiki.insert_one(article)
-                article['actionurl'] = "http://0.0.0.0:5000/create_wiki?id=" + clusterID
+                article['actionurl'] = "create_wiki?id=" + doi
                 article['wiki_exists'] = False
-            articles.append(article)
+        else:
+            insert_id = mongo.db.paperwiki.insert_one(article)
+            article['actionurl'] = "create_wiki?id=" + doi
+            article['wiki_exists'] = False
     context = {"docs":articles}
     resp = render_template("home.html",docs=articles)
     return resp
@@ -120,13 +112,15 @@ def create_wiki(id=None):
     Create new wiki page
     """
     clusterID = str(request.form['create_wiki'])
-    submit_url = "http://0.0.0.0:5000/submit_wiki?id=" + clusterID
-    doc = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
+    submit_url = "submit_wiki?id=" + clusterID
+    doc = mongo.db.paperwiki.find_one({ "DOI" : clusterID})
     print('This is the article ID: ',clusterID)
     context={"cluster_id":request.form['create_wiki']}
     form = PageDownFormExample()
     if form.validate_on_submit():
         text = form.pagedown.data
+    if 'content' not in doc.keys():
+        doc['content'] = "Add information about article here!"
     resp = render_template("create_wiki.html", id = clusterID, submit_url=submit_url, form = form,doc=doc)
     return resp
 
@@ -139,10 +133,11 @@ def submit_wiki(id=None):
     # print(request.form['submit_wiki'])
     clusterID = str(request.args.get('id'))
     response = json.loads(request.form['submit_wiki'])
-    search_result = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
+    search_result = mongo.db.paperwiki.find_one({ "DOI" : clusterID})
     search_result['content'] = str(response['content'])
     insert_id = mongo.db.paperwiki.replace_one({'_id':search_result['_id']},search_result) # mongo
     content = Markup(markdown.markdown(search_result['content']))
+    search_result['actionurl'] = "create_wiki?id=" + clusterID
     resp = render_template("see_wiki.html",id=clusterID,doc=search_result,content=content)
     return resp
 
@@ -153,12 +148,21 @@ def see_wiki(id=None):
     See existing wiki page
     """
     clusterID = str(request.args.get('id'))
-    search_result = mongo.db.paperwiki.find_one({ "clusterID" : clusterID})
+    search_result = mongo.db.paperwiki.find_one({ "DOI" : clusterID})
     content = Markup(markdown.markdown(search_result['content']))
+    search_result['actionurl'] = "create_wiki?id=" + clusterID
     resp = render_template("see_wiki.html",id=clusterID,doc=search_result,content=content)
     return resp
+
+ON_HEROKU = os.environ.get('ON_HEROKU')
+
+if ON_HEROKU:
+    # get the heroku port
+    port = int(os.environ.get('PORT', 17995))  # as per OP comments default is 17995
+else:
+    port = 5000
 
 if __name__ == "__main__":
     print("Running on Port 5000")
     # Can change workers to num cores for better performance
-    app.run(host="0.0.0.0",port=5000,debug=True)
+    app.run(host="0.0.0.0",port=port,debug=True)
