@@ -119,6 +119,8 @@ def create_wiki(id=None):
     form = PageDownFormExample()
     if form.validate_on_submit():
         text = form.pagedown.data
+    if 'content' not in doc.keys():
+        doc['content'] = "Add information about article here!"
     resp = render_template("create_wiki.html", id = clusterID, submit_url=submit_url, form = form,doc=doc)
     return resp
 
@@ -135,6 +137,7 @@ def submit_wiki(id=None):
     search_result['content'] = str(response['content'])
     insert_id = mongo.db.paperwiki.replace_one({'_id':search_result['_id']},search_result) # mongo
     content = Markup(markdown.markdown(search_result['content']))
+    search_result['actionurl'] = "create_wiki?id=" + clusterID
     resp = render_template("see_wiki.html",id=clusterID,doc=search_result,content=content)
     return resp
 
@@ -147,6 +150,7 @@ def see_wiki(id=None):
     clusterID = str(request.args.get('id'))
     search_result = mongo.db.paperwiki.find_one({ "DOI" : clusterID})
     content = Markup(markdown.markdown(search_result['content']))
+    search_result['actionurl'] = "create_wiki?id=" + clusterID
     resp = render_template("see_wiki.html",id=clusterID,doc=search_result,content=content)
     return resp
 

@@ -29,6 +29,11 @@
     Abstract: {{ doc.abstract}}
     <br><br>
     {{content}}
+    <br><br>
+    <form action={{doc.actionurl}} method = "POST">
+    <button name="create_wiki" type="submit" value={{doc.DOI}}
+    id={{doc.DOI}}>Create Wiki</button>
+    </form>
 
 <!--
     Title: Large-scale automated synthesis of human functional neuroimaging data
@@ -50,6 +55,7 @@
     list content
     {% endfor %}
   -->
+    <br><br>
     <h2>Forum area (Reddit-like discussion board here)</h2>
 <!--  FORUM AREA
 
