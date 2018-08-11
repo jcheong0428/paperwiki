@@ -29,12 +29,14 @@ Paperwiki section
 - retraction watch buttons and such.
 
 # To run:
-install dependencies
-run
+1. install dependencies
+2. update username and password in `config.py` file
+3. run
 ```
 python app.py
 ```
 in browser navigate to localhost:5000
+
 
 # Resources
 https://github.com/reddit-archive/reddit
