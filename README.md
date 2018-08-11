@@ -37,6 +37,10 @@ python app.py
 ```
 in browser navigate to localhost:5000
 
+# To deploy
+1. https://medium.com/the-andela-way/deploying-a-python-flask-app-to-heroku-41250bda27d0
+2. Set environ variable for port. 
+Config Vars: ON_HEROKU : True
 
 # Resources
 https://github.com/reddit-archive/reddit  
