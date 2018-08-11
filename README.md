@@ -39,9 +39,10 @@ in browser navigate to localhost:5000
 
 
 # Resources
-https://github.com/reddit-archive/reddit
-https://github.com/ckreibich/scholar.py
-https://flaskbb.readthedocs.io/en/latest/installation.html
+https://github.com/reddit-archive/reddit  
+https://github.com/ckreibich/scholar.py  
+https://flaskbb.readthedocs.io/en/latest/installation.html  
+https://github.com/fabiobatalha/crossrefapi  
 
 ![alt text](./images/1.png "Logo Title Text 1")
 ![alt text](./images/2.png "Logo Title Text 1")
