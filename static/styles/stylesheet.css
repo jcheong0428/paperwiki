@@ -1,0 +1,57 @@
+h1 {
+    color: navy;
+}
+h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+}
+body {
+  font-size: 13px;
+  font-family: Arial,sans-serif;
+  line-height: 1.24;
+}
+
+div.gs_r {
+}
+
+div.gs_ri {
+  max-width: 600px;
+  display: block;
+}
+
+h3.gs_rt {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  position: relative;
+  font-weight: normal;
+  font-size: 17px;
+  line-height: 19px;
+  margin-bottom: 2px;
+  word-wrap: break-word;
+}
+
+div.gs_a {
+  color: #006621;
+}
+div.gs_a a:link, a:visited {
+  text-decoration: underline;
+  color: #006621;
+}
+
+div.gs_rs {
+  margin: 10px 0px 20px 0px;
+  word-wrap: break-word;
+}
+
+div.gs_ggs {
+  margin-left: 16px;
+  position: relative;
+  z-index: 1;
+  float: right;
+  min-width: 200px;
+  max-width: 256px;
+  width: calc(100% - 620px);
+  font-size: 12px;
+  line-height: 19px;
+}
