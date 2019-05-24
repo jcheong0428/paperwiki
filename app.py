@@ -73,18 +73,24 @@ async def do_find_one(clusterID):
 @app.route("/search", methods=['GET','POST'])
 def search():
     """
-    Uses scholar.py to read documents from google search.
-
+    Uses Crossref API to search documents.
     """
     queries = {}
-    for key in ['author','words']:
+    for key in ['author','words','doi']:
         val = request.form[key]
         if len(val)>0:
             queries[key] = request.form[key]
         else:
             queries[key] = None
-    works = Works() # init api scraper
-    articles_q = works.query(title=queries['words'], author=queries['author']).sample(20)
+    # Init API and query
+    works = Works()
+    articles_q = []
+    if queries['doi']:
+        articles_q = [works.doi(doi = queries['doi'])]
+    else:
+        articles_q = works.query(title=queries['words'], author=queries['author']).sample(20)
+    print(articles_q)
+    # Check if article is in database already and wiki exists
     articles = []
     for article in articles_q:
         articles.append(article)
