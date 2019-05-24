@@ -41,7 +41,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
   <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
   <script>
-  var initContent = "{{ doc.content|safe }}"
+  var initContent = `{{ doc.content|safe }}`
   var simplemde = new SimpleMDE({ element: document.getElementById("demo1"),
                                 spellChecker: false,
                                 initialValue: initContent
