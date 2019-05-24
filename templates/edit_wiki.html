@@ -28,10 +28,10 @@
     <br>
     Abstract: {{ doc.abstract}}
 
-    <form>
+		<form>
     	<textarea name="desc" id="demo1"></textarea>
     </form>
-    <form action={{submit_url}} method = "POST">
+    <form action={{doc.actionurl}} method = "POST">
       <button name="submit_wiki" type="submit" id="submit_wiki"
       value='VALUEHERE'>Submit Wiki</button>
     </form>
@@ -41,7 +41,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
   <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
   <script>
-  var initContent = `{{ doc.content|safe }}`
+  var initContent = `{{ doc.content }}`;
   var simplemde = new SimpleMDE({ element: document.getElementById("demo1"),
                                 spellChecker: false,
                                 initialValue: initContent
