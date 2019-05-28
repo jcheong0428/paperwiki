@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113777015-3"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-113777015-3');
+		</script>
 		<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico')}}">
 		<title>PaperWiki</title>
 		<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
