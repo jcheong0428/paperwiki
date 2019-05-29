@@ -24,25 +24,53 @@
 		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/bootstrap.min.css')}}" />
 		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/stylesheet.css')}}" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+		html body {
+				background: #93E5AB !important;
+		}
+		.navbar-custom {
+		    background-color: #93E5AB;
+				box-shadow: none;
+		}
+		/* change the brand and text color */
+		.navbar-custom .navbar-brand,
+		.navbar-custom .navbar-text {
+		    color: rgba(0,0,0,.8);
+		}
+		/* change the link color */
+		.navbar-custom .navbar-nav .nav-link {
+		    color: rgba(255,255,255,.5);
+		}
+		/* change the color of active or hovered links */
+		.navbar-custom .nav-item.active .nav-link,
+		.navbar-custom .nav-item:hover .nav-link {
+		    color: #ffffff;
+		}
+
+		.navbar .navbar-default {
+		    background-color: #99ccff;
+		    border: none;
+				box-shadow: none!important;
+		    -webkit-box-shadow: none;
+		}
+
+		.navbar .navbar-default .navbar-collapse {
+		    border: none;
+				box-shadow: none!important;
+		    -webkit-box-shadow: none;
+		}
+
+		.jumbotron {
+    background-color: #ffffff!important;
+		}
+
+		</style>
 	</head>
 
 	<body>
-		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+		<nav class="navbar navbar-expand-sm navbar-custom">
 		  <!-- Brand/logo -->
 		  <a class="navbar-brand py-0" href="/">PaperWiki</a>
-
-		  <!-- Links -->
-		  <!-- <ul class="navbar-nav">
-		    <li class="nav-item">
-		      <a class="nav-link" href="#">Link 1</a>
-		    </li>
-		    <li class="nav-item">
-		      <a class="nav-link" href="#">Link 2</a>
-		    </li>
-		    <li class="nav-item">
-		      <a class="nav-link" href="#">Link 3</a>
-		    </li>
-		  </ul> -->
 		</nav>
 
 		<div class = "bodycontainer">
@@ -50,11 +78,9 @@
 				<div class="row">
 					<div class="col-md-12">
 							<div class="jumbotron">
-							  <!-- <h1 class="display-3">Welcome to PaperWiki</h1> -->
-							  <p class="lead">
-									Free online summaries for scientific articles, created and edited by readers around the world.
+							  <p class="lead" style="font-size:1.25rem;text-align: center;">
+									Free online summaries for scientific articles, created by readers around the world.
 								</p>
-							  <hr class="my-3">
 									<div class="row">
 											<form class="form-inline my-6 my-lg-0" style="margin-left: 15px;" action = "search" method = "POST"
 											 enctype = "multipart/form-data" id="searchform">
@@ -64,63 +90,54 @@
 												<button class="btn btn-secondary my-2 my-sm-0" type="submit" style="font-size:15px;">Search</button>
 											</form>
 									</div>
-								</div>
-					</div>
-				</div>
-			</div>
-		</div>
 
-
-
-		<div class = "bodycontainer">
-      <div class = 'resultscontainer'>
-        <div class="container">
-      {% if docs %}
-	      <h2>Here are the search results</h2>
-				{% for doc in docs %}
-				<div class="gs_r">
-					<div class="gs_ggs">
-						{% if doc.wiki_exists %}
-							 <form action={{doc.actionurl}} method = "POST">
-								<button name="see_wiki" type="submit" value={{doc.DOI}}
-								id={{doc.doi}}>See Wiki</button>
+	      	{% if docs %}
+					<hr class="my-3">
+		      <p>Search results</p>
+					{% for doc in docs %}
+					<div class="gs_r">
+						<div class="gs_ggs">
+							{% if doc.wiki_exists %}
+								 <form action={{doc.actionurl}} method = "POST">
+									<button class="btn btn-secondary btn-sm" name="see_wiki" type="submit" value={{doc.DOI}}
+									id={{doc.doi}}>See Wiki</button>
+								</form>
+							{% else %}
+								<form action={{doc.actionurl}} method = "POST">
+								<button class="btn btn-secondary btn-sm" name="create_wiki" type="submit" value={{doc.DOI}}
+								id={{doc.DOI}}>Create Wiki</button>
 							</form>
-						{% else %}
-							<form action={{doc.actionurl}} method = "POST">
-							<button name="create_wiki" type="submit" value={{doc.DOI}}
-							id={{doc.DOI}}>Create Wiki</button>
-						</form>
-						{% endif %}
+							{% endif %}
+						</div>
+						<div class="gs_ri">
+						<h3 class="gs_rt">
+							<a href={{doc.URL}}>{{doc.title[0]}}</a>
+						</h3>
+						<div class="gs_r gs_a">
+							{% for author in doc.author %}
+			        {% if author.ORCID %}
+			        <a href={{author.ORCID}}>{{author['family']}}, {{author['given']}}</a>
+			        {% else %}{{author['family']}}, {{author['given']}}
+			        {% endif %}
+			        {% if loop.index < doc.author|length %}, {% endif %}
+			        {% endfor %}
+							...
+							{{ doc.created['date-parts'][0][0]}}
+							...
+							{{ doc.publisher}}
+						</div>
+						<div class="gs_rs">
+							{{ doc.abstract}}
+					  </div>
 					</div>
-					<div class="gs_ri">
-					<h3 class="gs_rt">
-						<a href={{doc.URL}}>{{doc.title[0]}}</a>
-					</h3>
-					<div class="gs_r gs_a">
-						{% for author in doc.author %}
-		        {% if author.ORCID %}
-		        <a href={{author.ORCID}}>{{author['family']}}, {{author['given']}}</a>
-		        {% else %}{{author['family']}}, {{author['given']}}
-		        {% endif %}
-		        {% if loop.index < doc.author|length %}, {% endif %}
-		        {% endfor %}
-						...
-						{{ doc.created['date-parts'][0][0]}}
-						...
-						{{ doc.publisher}}
-					</div>
-					<div class="gs_rs">
-						{{ doc.abstract}}
-				  </div>
 				</div>
-			</div>
-				{% endfor %}
+					{% endfor %}
 
-      {% else %}
-      <p></p>
-      {% endif %}
-      </div>
-		</div>
+		      {% else %}
+		      <p></p>
+		      {% endif %}
+      	<!-- </div>
+			</div> -->
     </div>
 
 		<!-- Default Statcounter code for Paperwiki.org

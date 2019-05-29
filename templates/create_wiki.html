@@ -19,42 +19,124 @@
 		<meta name="msapplication-TileColor" content="#da532c">
 		<meta name="theme-color" content="#ffffff">
 		<title>PaperWiki</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
    	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
+		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/bootstrap.min.css')}}" />
+		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/stylesheet.css')}}" />
 
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+		.navbar-custom {
+				background-color: #93E5AB;
+				box-shadow: none;
+		}
+		/* change the brand and text color */
+		.navbar-custom .navbar-brand,
+		.navbar-custom .navbar-text {
+				color: rgba(0,0,0,.8);
+		}
+		/* change the link color */
+		.navbar-custom .navbar-nav .nav-link {
+				color: rgba(255,255,255,.5);
+		}
+		/* change the color of active or hovered links */
+		.navbar-custom .nav-item.active .nav-link,
+		.navbar-custom .nav-item:hover .nav-link {
+				color: #ffffff;
+		}
+
+		.navbar .navbar-default {
+				background-color: #99ccff;
+				border: none;
+				box-shadow: none!important;
+				-webkit-box-shadow: none;
+		}
+
+		.navbar .navbar-default .navbar-collapse {
+				border: none;
+				box-shadow: none!important;
+				-webkit-box-shadow: none;
+		}
+
+		.title {
+			font-size: 1.75rem;
+		}
+
+		.authors {
+			font-size: 0.75rem;
+		}
+
+		.journal {
+			font-size: 1.00rem;
+		}
+
+		.abstract {
+			font-size: 0.75rem;
+		}
+
+		.small-middle-container{
+			margin: auto;
+			width: 70%;
+		}
+		</style>
 	</head>
 	<body>
-    <div class = "bodycontainer">
-      <div class="container">
-    <h1>Create Wiki page for</h1>
-    Title: <a href={{ doc.URL}}>{{doc.title[0]}}</a>
+		<nav class="navbar navbar-expand-sm navbar-custom">
+			<!-- Brand/logo -->
+			<a class="navbar-brand py-0" href="/">PaperWiki</a>
+		</nav>
+
+		<div class = "bodycontainer">
+      <div class="container small-middle-container">
+		<br>
+		<p class="journal"><i>{{ doc.publisher}}</i>. {{ doc.created['date-parts'][0][0]}}</p>
+		<p class="title"><a href={{ doc.URL}}>{{doc.title[0]}}</a>
+		</p>
     <br>
-    Authors:                 {% for author in doc.author %}
-                    {% if author.ORCID %}
-                    <a href={{author.ORCID}}>{{author['family']}}, {{author['given']}}</a>
-                    {% else %}{{author['family']}}, {{author['given']}}
-                    {% endif %}
-                    {% if loop.index < doc.author|length %}, {% endif %}
-                    {% endfor %}
-                    <br>
-    Year: {{ doc.created['date-parts'][0][0]}}
+			<p class="authors">
+	    {% for author in doc.author %}
+	                    {% if author.ORCID %}
+	                    <a href={{author.ORCID}}>{{author['family']}}, {{author['given']}}</a>
+	                    {% else %}{{author['family']}}, {{author['given']}}
+	                    {% endif %}
+	                    {% if loop.index < doc.author|length %}, {% endif %}
+	    {% endfor %}
+			</p>
     <br>
-    Journal: {{ doc.publisher}}
-    <br>
-    Abstract: {{ doc.abstract}}
+		<p class="abstract">
+    <b>Abstract:</b> {{ doc.abstract}}
+		</p>
+    <br><br>
 
     <form>
     	<textarea name="desc" id="demo1"></textarea>
     </form>
     <form action={{submit_url}} method = "POST">
-      <button name="submit_wiki" type="submit" id="submit_wiki"
+      <button class="btn btn-secondary btn-sm" name="submit_wiki" type="submit" id="submit_wiki"
       value='VALUEHERE'>Submit Wiki</button>
     </form>
+		<br><br>
 
-  </div></div>
-  </body>
+	<!--  FORUM AREA-->
+	<div id="disqus_thread"></div>
+	<script>
+	var disqus_config = function () {
+	this.page.url = window.location.href;  // Replace PAGE_URL with your page's canonical URL variable
+	this.page.identifier = "{{doc.DOI}}"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	};
+	(function() { // DON'T EDIT BELOW THIS LINE
+	var d = document, s = d.createElement('script');
+	s.src = 'https://paperwiki.disqus.com/embed.js';
+	s.setAttribute('data-timestamp', +new Date());
+	(d.head || d.body).appendChild(s);
+	})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	</div>
+	</div>
+	</body>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
   <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
   <script>
