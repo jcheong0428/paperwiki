@@ -35,13 +35,14 @@ from scholar import SearchScholarQuery, ScholarQuerier, SearchScholarQuery,Schol
 # Create app
 app = Flask(__name__)
 pagedown = PageDown(app)
-app.config.from_pyfile('./config.py')
-app.config.update(dict(
-    SECRET_KEY="powerful secretkey yes!",
-    WTF_CSRF_SECRET_KEY="a csrf secret key"
-))
 # app.db = AsyncIOMotorClient(app.config['MONGOURI'])['paperwiki']
-app.config["MONGO_URI"] = app.config['MONGOURI']
+on_heroku = os.getenv("ON_HEROKU", False)
+if on_heroku: 
+    app.config["MONGO_URI"] = os.getenv("MONGOURI")
+else:
+    app.config.from_pyfile('./config.py')
+    app.config["MONGO_URI"] = app.config['MONGOURI']
+
 mongo = PyMongo(app)
 # session = {}
 # @app.middleware('request')
