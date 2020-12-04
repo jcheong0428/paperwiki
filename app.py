@@ -88,7 +88,7 @@ def search():
     if queries['doi']:
         articles_q = [works.doi(doi = queries['doi'])]
     else:
-        articles_q = works.query(title=queries['words'], author=queries['author']).sample(20)
+        articles_q = works.query(bibliographic=queries['words'], author=queries['author']).sample(20)
     # Check if article is in database already and wiki exists
     articles = []
     for article in articles_q:
