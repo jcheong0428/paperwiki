@@ -37,11 +37,16 @@ app = Flask(__name__)
 pagedown = PageDown(app)
 # app.db = AsyncIOMotorClient(app.config['MONGOURI'])['paperwiki']
 on_heroku = os.getenv("ON_HEROKU", False)
-if on_heroku: 
+if on_heroku:
     app.config["MONGO_URI"] = os.getenv("MONGOURI")
 else:
     app.config.from_pyfile('./config.py')
     app.config["MONGO_URI"] = app.config['MONGOURI']
+
+app.config.update(dict(
+    SECRET_KEY="powerful secretkey yes!",
+    WTF_CSRF_SECRET_KEY="a csrf secret key"
+))
 
 mongo = PyMongo(app)
 # session = {}
