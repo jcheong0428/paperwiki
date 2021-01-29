@@ -1,14 +1,9 @@
 h1 {
-    color: navy;
+    color: #373a3c;
 }
 h3 {
   font-size: 1.17em;
   font-weight: bold;
-}
-body {
-  font-size: 13px;
-  font-family: Arial,sans-serif;
-  line-height: 1.24;
 }
 
 div.gs_r {
@@ -54,4 +49,57 @@ div.gs_ggs {
   width: calc(100% - 620px);
   font-size: 12px;
   line-height: 19px;
+}
+
+/*  Custom Jumbotron  */
+.jumbotron {
+  margin-top: 2em;
+	border-radius: 3em;
+}
+/* form center */
+.form-inline {
+  margin: 0 auto;
+  width: 80%;
+  text-align: center;
+}
+.form-control {
+  margin-bottom: .2rem;
+}
+
+/*  Custom Button */
+.btn-custom {
+	border-radius: 1em;
+}
+
+.button, input {
+  overflow: hidden;
+}
+/* footer */
+#page-content {
+  flex: 1 0 auto;
+}
+
+#sticky-footer {
+  flex-shrink: none;
+}
+
+.title {
+  font-size: 1.75rem;
+}
+
+.authors {
+  font-size: 0.75rem;
+}
+
+.journal {
+  font-size: 1.00rem;
+}
+
+.abstract {
+  font-size: 0.75rem;
+}
+
+.small-middle-container{
+  margin: auto;
+  width: 70%;
 }

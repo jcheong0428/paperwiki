@@ -195,4 +195,4 @@ else:
 if __name__ == "__main__":
     print("Running on Port 5000")
     # Can change workers to num cores for better performance
-    app.run(host="0.0.0.0",port=port,debug=False)
+    app.run(host="0.0.0.0",port=port,debug=True)

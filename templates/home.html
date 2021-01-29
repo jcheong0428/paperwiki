@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="msapplication-TileColor" content="#da532c">
+		<title>PaperWiki</title>
+
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113777015-3"></script>
 		<script>
@@ -10,86 +16,73 @@
 
 		  gtag('config', 'UA-113777015-3');
 		</script>
+
 		<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico')}}">
-		<title>PaperWiki</title>
 		<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}">
 		<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png')}}">
 		<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png')}}">
 		<link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}'">
-		<meta name="msapplication-TileColor" content="#da532c">
-		<meta name="theme-color" content="#ffffff">
 
-   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-		<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/font-awesome.min.css')}}" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/jquery.bxslider.css')}}" />
+		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/isotope.css')}}" media="screen"/>
+		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/animate.css')}}" />
+		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='js/fancybox/jquery.fancybox.css')}}" />
+		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/prettyPhoto.css')}}" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		   
 		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/bootstrap.min.css')}}" />
 		<link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/stylesheet.css')}}" />
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<style>
-		html body {
-				background: #93E5AB !important;
-		}
-		.navbar-custom {
-		    background-color: #93E5AB;
-				box-shadow: none;
-		}
-		/* change the brand and text color */
-		.navbar-custom .navbar-brand,
-		.navbar-custom .navbar-text {
-		    color: rgba(0,0,0,.8);
-		}
-		/* change the link color */
-		.navbar-custom .navbar-nav .nav-link {
-		    color: rgba(255,255,255,.5);
-		}
-		/* change the color of active or hovered links */
-		.navbar-custom .nav-item.active .nav-link,
-		.navbar-custom .nav-item:hover .nav-link {
-		    color: #ffffff;
-		}
-
-		.navbar .navbar-default {
-		    background-color: #99ccff;
-		    border: none;
-				box-shadow: none!important;
-		    -webkit-box-shadow: none;
-		}
-
-		.navbar .navbar-default .navbar-collapse {
-		    border: none;
-				box-shadow: none!important;
-		    -webkit-box-shadow: none;
-		}
-
-		.jumbotron {
-    background-color: #ffffff!important;
-		}
-
-		</style>
 	</head>
 
 	<body>
-		<nav class="navbar navbar-expand-sm navbar-custom">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 		  <!-- Brand/logo -->
-		  <a class="navbar-brand py-0" href="/">PaperWiki</a>
+		  <a class="navbar-brand" href="/">PaperWiki</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="navbar-collapse collapse show" id="navbarColor01" style="">
+			<ul class="navbar-nav mr-auto">
+			  <li class="nav-item active">
+				<a class="nav-link" href="#">Home
+				  <span class="sr-only">(current)</span>
+				</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="#">Features
+				</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="#">About
+				</a>
+			  </li>
+			</ul>
+			<div class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" href="#">Login
+					</a>
+			  </li></div>
+		  </div>
 		</nav>
-
-		<div class = "bodycontainer">
+		<div class="bodycontainer">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-12">
-							<div class="jumbotron">
-							  <p class="lead" style="font-size:1.25rem;text-align: center;">
-									Free online summaries for scientific articles, created by readers around the world.
-								</p>
-									<div class="row">
-											<form class="form-inline my-6 my-lg-0" style="margin-left: 15px;" action = "search" method = "POST"
-											 enctype = "multipart/form-data" id="searchform">
-											  <input class="form-control mr-lg-2" type = "search" id="words" name = "words" placeholder="Search by article title or keywords" size="80" style="font-size:15px;">
-												<input class="form-control mr-lg-2" type = "search" id="author" name = "author" placeholder="Search by author names" size="80" style="font-size:15px;">
-												<input class="form-control mr-lg-2" type = "search" id="doi" name = "doi" placeholder="Search by DOI" size="80" style="font-size:15px;">
-												<button class="btn btn-secondary my-2 my-sm-0" type="submit" style="font-size:15px;">Search</button>
-											</form>
-									</div>
+						<div class="jumbotron">
+							<h1 class="display-3" style="text-align: center;">PaperWiki</h1>
+							<p class="lead form-inline" style="font-size:1.25rem;text-align: left; margin-bottom: 1rem;">
+								Online summaries of scientific articles created by readers around the world.
+							</p>
+								<div class="row">
+									<form class="form-inline my-6 my-lg-0" action = "search" method = "POST"
+										enctype = "multipart/form-data" id="searchform">
+										<input class="form-control" type = "search" id="words" name = "words" placeholder="Search by article title or keywords" size="80" style="font-size:15px;">
+										<input class="form-control" type = "search" id="author" name = "author" placeholder="Search by author names" size="80" style="font-size:15px;">
+										<input class="form-control" type = "search" id="doi" name = "doi" placeholder="Search by DOI" size="80" style="font-size:15px;">
+										<button class="btn btn-secondary" type="submit" style="font-size:15px;">Search</button>
+									</form>
+								</div>
 
 	      	{% if docs %}
 					<hr class="my-3">
@@ -114,31 +107,48 @@
 							<a href={{doc.URL}}>{{doc.title[0]}}</a>
 						</h3>
 						<div class="gs_r gs_a">
-							{% for author in doc.author %}
-			        {% if author.ORCID %}
-			        <a href={{author.ORCID}}>{{author['family']}}, {{author['given']}}</a>
-			        {% else %}{{author['family']}}, {{author['given']}}
-			        {% endif %}
-			        {% if loop.index < doc.author|length %}, {% endif %}
-			        {% endfor %}
-							...
-							{{ doc.created['date-parts'][0][0]}}
-							...
-							{{ doc.publisher}}
-						</div>
-						<div class="gs_rs">
-							{{ doc.abstract}}
-					  </div>
-					</div>
-				</div>
-					{% endfor %}
+										{% for author in doc.author %}
+						        {% if author.ORCID %}
+						        <a href={{author.ORCID}}>{{author['family']}}, {{author['given']}}</a>
+						        {% else %}{{author['family']}}, {{author['given']}}
+						        {% endif %}
+						        {% if loop.index < doc.author|length %}, {% endif %}
+						        {% endfor %}
+										...
+										{{ doc.created['date-parts'][0][0]}}
+										...
+										{{ doc.publisher}}
+									</div>
+									<div class="gs_rs">
+										{{ doc.abstract}}
+								  </div>
+								</div>
+							</div>
+							{% endfor %}
 
-		      {% else %}
-		      <p></p>
-		      {% endif %}
-      	<!-- </div>
-			</div> -->
-    </div>
+			      {% else %}
+			      <p></p>
+			      {% endif %}
+					</div>
+			</div>
+		</div>
+		</div>
+
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="static/js/jquery-2.1.1.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="static/js/bootstrap.min.js"></script>
+		<script src="static/js/wow.min.js"></script>
+		<script src="static/js/fancybox/jquery.fancybox.pack.js"></script>
+		<script src="static/js/jquery.easing.1.3.js"></script>
+		<script src="static/js/jquery.bxslider.min.js"></script>
+		<script src="static/js/jquery.prettyPhoto.js"></script>
+		<script src="static/js/jquery.isotope.min.js"></script>
+		<script src="static/js/functions.js"></script>
+		<script>
+			wow = new WOW({}).init();
+		</script>
 
 		<!-- Default Statcounter code for Paperwiki.org
 		http://www.paperwiki.org -->
