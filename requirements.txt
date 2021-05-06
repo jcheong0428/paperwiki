@@ -5,7 +5,7 @@ mongoengine==0.15.0
 motor==1.2.1
 Markdown==2.6.11
 Flask==1.0
-Flask-Cors==3.0.2
+Flask-Cors==3.0.9
 Flask-PageDown==0.2.2
 Flask-PyMongo==2.1.0
 Flask-SimpleMDE==0.3.0
