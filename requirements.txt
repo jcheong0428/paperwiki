@@ -12,6 +12,6 @@ Flask-SimpleMDE==0.3.0
 Flask-WTF==0.14.3
 gunicorn==19.9.0
 beautifulsoup4==4.6.0
-urllib3==1.24.2
+urllib3==1.26.5
 crossrefapi==1.5.0
 dnspython==2.0.0
